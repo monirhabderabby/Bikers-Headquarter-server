@@ -17,11 +17,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run (){
     try{
         await client.connect();
-        const ProductCollection = client.db("PCollection").collection("Products");
+        const ProductCollection = client.db("ProductCollection").collection("Products");
         
         //POST API
         app.post('/addProduct', async (req, res)=>{
             const product = req.body;
+            const result = await ProductCollection.insertOne(product);
+            res.send(result)
 
         })
 
