@@ -2,9 +2,10 @@ const express = require('express')
 const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 
 //use middleware
 app.use(cors());
@@ -20,6 +21,7 @@ async function run (){
         const ProductCollection = client.db("ProductCollection").collection("Products");
         
         //POST API
+        //Add single product to mongodb
         app.post('/addProduct', async (req, res)=>{
             const product = req.body;
             const result = await ProductCollection.insertOne(product);
@@ -27,6 +29,42 @@ async function run (){
 
         })
 
+        //GET API
+        //Get all products from DB
+        app.get('/allProducts', async (req, res)=>{
+            const query = {};
+            const cursor = ProductCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        //Get signel product filterirng by params id
+
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await ProductCollection.findOne(query);
+            res.send(result)
+        })
+
+
+        //PUT API
+        app.put('/product/:id', async (req, res)=>{
+            const id = req.params.id;
+            const updatedQuantity = req.body;
+            const filter = {_id: ObjectId(id)};
+            const option = { upsert : true };
+            console.log(updatedQuantity);
+            const updateDoc = {
+                $set: {
+                    quantity: updatedQuantity.quantity
+                }
+            };
+            const result = await ProductCollection.updateOne(filter, updateDoc, option);
+            res.send(result)
+
+
+        })
 
 
 
