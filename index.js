@@ -39,11 +39,19 @@ async function run (){
         })
 
         //Get signel product filterirng by params id
-
         app.get('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const result = await ProductCollection.findOne(query);
+            res.send(result)
+        })
+
+        //Get all products filtering by email
+        app.get('/allproductsByEmail/:email', async (req, res)=>{
+            const email = req.params.email;
+            const filter = {email : email};
+            const cursor = ProductCollection.find(filter)
+            const result = await cursor.toArray();
             res.send(result)
         })
 
