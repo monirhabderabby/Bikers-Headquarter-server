@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const ObjectId = require('mongodb').ObjectId;
@@ -19,6 +20,15 @@ async function run (){
     try{
         await client.connect();
         const ProductCollection = client.db("ProductCollection").collection("Products");
+
+        //Token generate ( jwt )
+        app.post('/login', async(req, res)=>{
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.accessTokenSecret, {
+                expiresIn: "1d"
+            });
+            res.send({accessToken})
+        })
         
         //POST API
         //Add single product to mongodb
