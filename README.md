@@ -25,6 +25,7 @@ A Full Stack Inventory management Website
 * MongoDB
 * Node
 * Dotenv
+* JsonWebToken
 
 
 
