@@ -20,6 +20,7 @@ async function run (){
     try{
         await client.connect();
         const ProductCollection = client.db("ProductCollection").collection("Products");
+        const inventoryCollection = client.db("ProductCollection").collection("status");
 
         //Token generate ( jwt )
         app.post('/login', async(req, res)=>{
@@ -61,6 +62,14 @@ async function run (){
             const email = req.params.email;
             const filter = {email : email};
             const cursor = ProductCollection.find(filter)
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        //Get inventory update
+        app.get('/totalProduct', async (req, res)=> {
+            const filter = {};
+            const cursor = inventoryCollection.find(filter);
             const result = await cursor.toArray();
             res.send(result)
         })
