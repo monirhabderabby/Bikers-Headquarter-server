@@ -105,6 +105,25 @@ async function run (){
             res.send(result)
         })
 
+        //stock update
+        app.put('/stock', async (req, res)=> {
+            const data = req.body;
+            const DbData = await inventoryCollection.findOne({});
+            const oldTotalProducts = parseInt(DbData.totalProducts);
+            const newToalProducts = oldTotalProducts + 1;
+            const oldTotalQuantity = parseInt(DbData.totalQuantity);
+            const newTotalQuantity = oldTotalQuantity + parseInt (data.quantity);
+            const filter = {};
+            const updateDoc = {
+                $set: {
+                    totalProducts: newToalProducts,
+                    totalQuantity: newTotalQuantity
+                }
+            }
+            const result = await inventoryCollection.updateOne(filter,updateDoc)
+            res.send(result)
+        })
+
         //DELETE API
         app.delete("/product/:id", async (req, res)=> {
             const id = req.params.id;
